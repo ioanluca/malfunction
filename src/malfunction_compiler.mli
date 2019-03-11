@@ -19,6 +19,6 @@ val lambda_to_cmx :
   string -> (* the filename being compiled (used to print warnings) *)
   string -> (* the prefix for the output filenames *)
   lambda_mod -> outfiles
-val link_executable : string -> outfiles -> int
+val link_executable : ?pks:string list -> string -> outfiles -> int
 
 val compile_and_load : ?options:options -> Malfunction.t -> Obj.t

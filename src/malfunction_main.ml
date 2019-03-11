@@ -40,7 +40,7 @@ let run mode pks options impl output =
        let output = match output with
          | None -> Compenv.output_prefix file
          | Some out -> out in
-       let res = Malfunction_compiler.link_executable output tmpfiles in
+       let res = Malfunction_compiler.link_executable ~pks output tmpfiles in
        Malfunction_compiler.delete_temps tmpfiles;
        res)
   | `Eval, Some _file ->

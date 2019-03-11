@@ -909,7 +909,10 @@ let compile_and_load ?(options : options =[]) e =
 
 
 
-let link_executable output tmpfiles =
+let link_executable ?(pks=[]) output tmpfiles =
   (* urgh *)
-  Sys.command (Printf.sprintf "ocamlfind ocamlopt -package zarith zarith.cmxa '%s' -o '%s'"
-                 tmpfiles.cmxfile output)
+  let ps = String.concat " -package " (["zarith"] @ pks) in
+  Sys.command (let cmd = Printf.sprintf ("ocamlfind ocamlopt -o '%s' '%s' -package %s -linkpkg") 
+                output tmpfiles.cmxfile ps in 
+                print_endline cmd;
+                cmd)
