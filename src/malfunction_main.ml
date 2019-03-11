@@ -29,14 +29,14 @@ let repl () =
     loop () in
   try loop () with End_of_file -> ()
 
-let run mode options impl output =
+let run mode pks options impl output =
   Findlib.init ();
   match mode, impl with
   | `Cmx, Some file ->
-     with_error_reporting Format.std_formatter 1 (fun () -> let _ = Malfunction_compiler.compile_cmx file in 0)
+     with_error_reporting Format.std_formatter 1 (fun () -> let _ = Malfunction_compiler.compile_cmx ~pks file in 0)
   | `Compile, Some file ->
      with_error_reporting Format.std_formatter 1 (fun () ->
-       let tmpfiles = Malfunction_compiler.compile_cmx ~options file in
+       let tmpfiles = Malfunction_compiler.compile_cmx ~pks ~options file in
        let output = match output with
          | None -> Compenv.output_prefix file
          | Some out -> out in
@@ -59,12 +59,14 @@ let parse_args args =
   let impl = ref None in
   let output = ref None in
   let opts = ref [] in
+  let pks = ref [] in
   let rec parse_opts mode = function
     | "-v" :: rest -> opts := `Verbose :: !opts; parse_opts mode rest
     | "-o" :: o :: rest -> output := Some o; parse_opts mode rest
+    | "-p" :: p :: rest -> pks := p :: !pks; parse_opts mode rest
     | i :: rest ->
        (match !impl with None -> (impl := Some i; parse_opts mode rest) | _ -> usage ())
-    | [] -> run mode !opts !impl !output in
+    | [] -> run mode !pks !opts !impl !output in
   match args with
   | "cmx" :: rest -> parse_opts `Cmx rest
   | "compile" :: rest -> parse_opts `Compile rest

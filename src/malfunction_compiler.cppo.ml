@@ -701,14 +701,14 @@ and bindings_to_lambda env bindings body =
     bindings body
 
 
-let setup_options options =
+let setup_options ?(pks=[]) options =
   Clflags.native_code := true;
   Clflags.flambda_invariant_checks := true;
   Clflags.nopervasives := true;
   Clflags.dump_lambda := false;
   Clflags.dump_cmm := false;
   Clflags.keep_asm_file := false;
-  Clflags.include_dirs := [Findlib.package_directory "zarith"];
+  Clflags.include_dirs := [Findlib.package_directory "zarith"] @ (List.map Findlib.package_directory pks); 
   Clflags.inlining_report := false;
   Clflags.dlcode := true;
   Clflags.shared := false;
@@ -736,8 +736,8 @@ let setup_options options =
   Compmisc.init_path true
 
 
-let module_to_lambda ?options (Mmod (bindings, exports)) =
-  setup_options (match options with Some o -> o | None -> []);
+let module_to_lambda ?pks ?options (Mmod (bindings, exports)) =
+  setup_options ?pks (match options with Some o -> o | None -> []);
   let print_if flag printer arg =
     if !flag then Format.printf "%a@." printer arg;
     arg in
@@ -786,14 +786,14 @@ let delete_temps { objfile; cmxfile; cmifile } =
 type options = [`Verbose | `Shared] list
 
 
-let lambda_to_cmx ?(options=[]) filename prefixname (size, code) =
+let lambda_to_cmx ?pks ?(options=[]) filename prefixname (size, code) =
   let ppf = Format.std_formatter in
   let outfiles = ref {
     cmxfile = prefixname ^ ".cmx";
     objfile = prefixname ^ Config.ext_obj;
     cmifile = None
   } in
-  setup_options options;
+  setup_options ?pks options;
   try
 #if OCAML_VERSION < (4, 06, 0)
     let source_provenance = Timings.File filename in
@@ -865,14 +865,14 @@ let lambda_to_cmx ?(options=[]) filename prefixname (size, code) =
     raise e
 
 
-let compile_cmx ?(options=[]) filename =
+let compile_cmx ?pks ?(options=[]) filename =
   let prefixname = Compenv.output_prefix filename in
   let lexbuf = Lexing.from_channel (open_in filename) in
   Lexing.(lexbuf.lex_curr_p <-
             { lexbuf.lex_curr_p with pos_fname = filename });
   Malfunction_parser.read_module lexbuf
-  |> module_to_lambda ~options
-  |> lambda_to_cmx ~options filename prefixname
+  |> module_to_lambda ?pks ~options
+  |> lambda_to_cmx ?pks ~options filename prefixname
 
 
 (* copied from opttoploop.ml *)
