@@ -4,7 +4,7 @@ open Malfunction
 let usage () =
   Printf.fprintf stderr "%s" @@
     "Malfunction v0.1. Usage:\n"^
-    "   malfunction compile [-v] [-o output] input.mlf\n" ^
+    "   malfunction compile [-v] [-p package]... [-o output] input.mlf\n" ^
     "     Compile input.mlf to an executable\n\n" ^
     "   malfunction cmx [-v] input.mlf\n" ^
     "     Compile input.mlf to input.cmx, for linking with ocamlopt\n\n" ^
