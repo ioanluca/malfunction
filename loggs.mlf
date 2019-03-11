@@ -1,0 +1,6 @@
+(module
+($a 1)
+(_ (apply (global $Pervasives $print_endline) (apply (global $Base64 $encode_exn) 0 0 0 0 "Ocaml rocks!")))
+; (_ (apply (global $Pervasives $print_int) 1)) 
+;  Base64.encode_exn "OCaml rocks!"
+(export $a))
