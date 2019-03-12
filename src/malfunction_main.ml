@@ -4,7 +4,7 @@ open Malfunction
 let usage () =
   Printf.fprintf stderr "%s" @@
     "Malfunction v0.1. Usage:\n"^
-    "   malfunction compile [-v] [-p package]... [-o output] input.mlf\n" ^
+    "   malfunction compile [-v] [-p/package package]... [-o output] input.mlf\n" ^
     "     Compile input.mlf to an executable\n\n" ^
     "   malfunction cmx [-v] input.mlf\n" ^
     "     Compile input.mlf to input.cmx, for linking with ocamlopt\n\n" ^
@@ -64,6 +64,7 @@ let parse_args args =
     | "-v" :: rest -> opts := `Verbose :: !opts; parse_opts mode rest
     | "-o" :: o :: rest -> output := Some o; parse_opts mode rest
     | "-p" :: p :: rest -> pks := p :: !pks; parse_opts mode rest
+    | "-package" :: p :: rest -> pks := p :: !pks; parse_opts mode rest
     | i :: rest ->
        (match !impl with None -> (impl := Some i; parse_opts mode rest) | _ -> usage ())
     | [] -> run mode !pks !opts !impl !output in
