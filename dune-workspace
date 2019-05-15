@@ -2,6 +2,6 @@
 (context (opam (switch 4.03.0+flambda)))
 (context (opam (switch 4.04.0+flambda)))
 (context (opam (switch 4.04.2+flambda)))
-(context (opam (switch 4.05.0+flambda) (merlin)))
+(context (opam (switch 4.05.0+flambda)))
 (context (opam (switch 4.06.1+flambda)))
-(context (opam (switch 4.07.0+flambda)))
+(context (opam (switch 4.07.1+flambda) (merlin)))
